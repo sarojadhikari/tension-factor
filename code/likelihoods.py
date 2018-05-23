@@ -76,6 +76,12 @@ class Planck_plik_lite_likelihood(object):
         
     def logLike(self, params):
         # evaluate the loglikelihood including the tau prior
+        
+        # first check if any of the parameters are out-of-bounds
+        for i in range(len(params)):
+            if (params[i]>self.bounds[i][1]) or (params[i]<self.bounds[i][0]):
+                return -np.infty
+            
         self.get_camb_Cls(params)
         tau = params[5]
         tauprior = -0.5*np.power((tau-self.taumean)/self.tausigma, 2.0)
@@ -83,7 +89,25 @@ class Planck_plik_lite_likelihood(object):
         # first obtain the binned theory cls
         if (self.which == "TT"):
             clthb = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
+        elif (self.which == "EE"):
+            clthb = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
         
         cldif = self.cl - clthb
         
         return -0.5*(cldif@self.invcov@cldif) + tauprior
+    
+### sample code to get the best-fit cosmological parameters using scipy ###
+###########################################################################
+        
+    """
+    from likelihoods import Planck_plik_lite_likelihood
+    plikliteTT = Planck_plik_lite_likelihood(which="TT")
+    
+    def lnLikeT(params):
+        return (-1.)*plikliteTT.logLike(params)
+        
+    from scipy.optimize import differential_evolution as dev
+    bounds = plikliteTT.bounds
+    res = dev(lnLikeT, bounds, disp = True)
+    
+    """

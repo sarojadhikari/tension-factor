@@ -35,3 +35,13 @@ Ev_com = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verboser=
                          resume=False, n_live_points=400, sampling_efficiency="model",
                          outputfiles_basename=u'chains/TTEE_combined_')
 ```
+Now, for the other evidence where we use best-fit values from TT and EE spectra fit separately, we need to get the best-fit data realizations using the corresponding best-fit values.
+```python
+plTTEE.get_camb_Cls(resultTT.x)
+clbfTT = plTTEE.bmTT@(plTTEE.mufac*(plTTEE.cmb.cambTCls[30:2509]))
+
+plTTEE.get_camb_Cls(resultEE.x)
+clbfEE = plTTEE.bmEE@(plTTEE.mufac*(plTTEE.cmb.cambECls[30:1997]))
+
+plTTEE.cldata = np.append(clbfTT, clbfEE)
+```

@@ -11,7 +11,7 @@ boundsTT = plTT.bounds
 resultTT = dev(neglnLikeT, bounds, disp=True, tol=0.005)
 print (resultTT.x, resultTT.fun)
 ```
-For the dataset-evidence ratio, we compute evidences using two "best-fit data realizations". For example, to compare Planck TT and EE power spectrum data, we will need to similarly also find resultEE and resultTTEE, and then compute two evidences using multinest.
+For the dataset-evidence ratio, we compute evidences using two "best-fit data realizations". For example, to compare Planck TT and EE power spectrum data, we will need to similarly also find `resultEE` and `resultTTEE`, and then compute two evidences using multinest.
 ```python
 import pymultinest
 

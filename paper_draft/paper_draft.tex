@@ -1,0 +1,194 @@
+\documentclass[amsmath, prd, reprint, aps]{revtex4-1}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks   = true, %Colours links instead of ugly boxes
+    urlcolor     = blue, %Colour for external hyperlinks
+    linkcolor    = black, %Colour of internal links
+    citecolor   = red %Colour of citations
+}
+
+\renewcommand{\arraystretch}{1.25}
+\newcommand{\yv}{\textbf{y}}
+\newcommand{\sv}{\textbf{s}}
+\newcommand{\Lv}{\textbf{L}}
+\newcommand{\nv}{\textbf{n}}
+\newcommand{\qv}{\textbf{q}}
+\newcommand{\Cv}{\textbf{C}}
+\newcommand{\Sv}{\textbf{S}}
+\newcommand{\Nv}{\textbf{N}}
+
+\newcommand{\cov}{\textbf{C}}
+
+\newcommand{\xv}{\textbf{x}}
+\newcommand{\kv}{\textbf{k}}
+\newcommand{\Kv}{\textbf{\textit{K}}}
+\newcommand{\tpc}{(2 \pi)^3}
+\newcommand{\DTT}{\frac{\Delta T}{T}}
+
+\newcommand{\dv}{\textbf{d}}
+\newcommand{\donev}{\textbf{d}_1}
+\newcommand{\dtwov}{\textbf{d}_2}
+\newcommand{\tv}{\bm{\theta}}
+\newcommand{\tML}{\tv^{\rm ML}}
+
+
+% define symbols
+\newcommand{\rv}{\textbf{r}}
+\newcommand{\Bl}{\Big \langle}
+\newcommand{\Br}{\Big \rangle}
+
+\newcommand{\lnR}{\ln R_{12}}
+
+\newcommand{\saroj}[1]{\textcolor{blue}{(Saroj: #1)}}
+\newcommand{\dragan}[1]{\textcolor{red}{(Dragan: #1)}}
+
+\begin{document}
+    \title{A new statistic to quantify tension between experiments} %{Comparing datasets with Bayesian Evidence}    
+    \author{Saroj Adhikari} \email{saroj@umich.edu}
+    \author{Dragan Huterer} \email{huterer@umich.edu}
+\affiliation{Department of Physics, University of Michigan, 450 Church St, Ann Arbor, MI 48109-1040, U.S.A.}
+    \date{\today}
+    
+    \begin{abstract}
+        With many cosmological surveys, we now have data from multiple observables that probe the same underlying cosmological model. As the surveys get better, the statistical errors on the parameters of the cosmological models are getting smaller. As a result, a number of interesting but mild level of tension between parameter values obtained from different surveys exist. Several tests have been devised to probe the {consistency} of two datasets given a cosmological model. Some of the widely used statistical tests have undesired properties or additional requirements such as dependence on the prior volume or requiring near-Gaussian posterior distributions. We propose a quantity defined as an evidence ratio in which these undesired properties are absent. We devise and test the quantity on simple one-parameter and two-parameter models with Gaussian and non-Gaussian likelihoods. Similar to a likelihood ratio or a Bayes factor, the dataset evidence ratio can be evaluated on the empirically calibrated Jeffreys scale. Applying the statistic to the Planck data, we find moderate discrepancy $\sim (2-3)\sigma$ when comparing TT and EE power spectra and when splitting the TT spectrum into small and large scales.
+    \end{abstract}
+    
+    \maketitle
+%\saroj{putting the alternative one only here to avoid confusion; the old text is still in main.tex}
+\section{Introduction}
+The use of Bayesian statistics in cosmology is now commonplace: most of the results on cosmological parameters from cosmic microwave background (CMB) experiments \cite{Ade:2015xua} and large-scale structure (LSS) surveys \cite{Abbott:2017wau} are reported as posterior distributions. In addition, various Bayesian methods are used for model comparison. See \cite{Trotta:2008qt} for reviews on these topics.
+
+Along with the increase in the number of cosmological surveys and the improvement in their precision, a number of parameter tensions between parameter constraints from different experiments have been observed. For example, the Hubble constant measurement from the local universe disagrees with that of Planck measurement, in the standard six parameter $\Lambda$CDM model, by about $3.4\sigma$ \cite{Riess:2016jrr, Bernal:2016gxb}. Also, there is some tension between the measurement of $\sigma_8, \Omega_m$ from weak lensing to that of the measurement from Planck CMB data. 
+
+As a result, a number of statistics have been developed to compare datasets in cosmology. The primary goal of these statistics is to determine if two datasets are consistent realizations of the same cosmological parameters. See \cite{Seehars:2015qza, Charnock:2017vcd, Lin:2017ikq} for discussions and comparisons of some of the popular methods. These methods can be loosely categorized as evidence-based \cite{Marshall:2004zd} and posterior-based \cite{Seehars:2014ora}. The evidence-based metric of \cite{Marshall:2004zd} has been widely used in cosmology \cite{March:2011rv, Amendola:2012wc, Joudaki:2016mvz, Raveri:2015maa} but is known to have a strong prior volume dependence. In this work, we define an evidence-based quantity which fixes the problem of prior volume dependence and which can be evaluated on a easy-to-interpret scale.
+
+Consider two datasets $\dv_1$ and $\dv_2$, and let $\tv$ denote a model through its parameters. Let us assume that both the datasets and the combination of them can be modeled by a particular $\Lambda$CDM realization, and the priors are wide enough to include the parameter posteriors preferred by both the datasets individually. Most commonly, a Bayesian analysis is used to determine posterior probability distributions for the model parameters $\tv$. Suppose, the two datasets separately give two (normalized) posterior distributions:
+\begin{align}
+    p_1(\tv | \dv_1) &= \frac{ \mathcal{L}(\dv_1|\tv) \pi(\tv)}{E(\dv_1)}
+    \label{eq:p1} \\
+    p_2(\tv | \dv_2) &= \frac{\mathcal{L}(\dv_2|\tv) \pi(\tv)}{E(\dv_2)}
+    \label{eq:p2}
+\end{align}
+where $\mathcal{L}(\dv|\tv)$ denotes the likelihood of the data $\dv$ given the model defined by a set of parameters $\tv$, $\pi(\tv)$ is the prior probability of the model parameters, and $E$ is called the marginal likelihood or the evidence,
+\begin{align}
+    E(\dv) &= \int d\tv \mathcal{L}(\dv|\tv) \pi(\tv).
+    \label{eq:evidence}
+\end{align}
+
+We will always use normalized probability density functions for the likelihood $\mathcal{L}$ ($\int \mathcal{L}(\dv|\theta) d\dv = 1$) and the prior $\pi$ ($\int \pi(\tv) d \tv =1$). The posterior for the combination of datasets $\dv_1, \dv_2$ is:
+\begin{align}
+    p_{12}(\theta|\dv_1,\dv_2) &= \frac{\mathcal{L}(\dv_1, \dv_2, \tv) \pi(\tv)}{E(\dv_1, \dv_2)} \\ &= \frac{\mathcal{L}(\dv_1, \tv) \mathcal{L}(\dv_2, \tv) \pi(\tv)}{E(\dv_1, \dv_2)}
+\end{align}
+where the second equality assumes that the combined likelihood is approximated well by the product of the likelihoods, which holds if the datasets are independent.
+
+The ratio of the evidences obtained using two different models, called the Bayes Factor, is used for model comparison. Some attempts has been made to use ratio of evidences for comparing model parameters (for the same underlying model) obtained using different datasets, however not without problems. See \cite{Marshall:2004zd, Grandis:2016fwl}. We attempt to remedy the situation. To do so, in the next section, we introduce a definition of Bayesian evidence for the maximum likelihood parameters rather than the observed data realization, which is followed by our introduction and justification of the dataset-evidence ratio in Section \ref{sec:evidenceratio}. We apply this ratio to test the consistency between Planck TT and EE spectra, and large and small scale Planck TT multipoles in Section \ref{sec:planck}. We summarize and conclude in Section \ref{sec:summary}.
+
+\section{Evidence for model parameters}
+We now define the marginal likelihood (or the evidence) for the maximum likelihood model parameters, $\tML$, instead of the usual definition of the evidence for the data, $\dv$. We do so as our primary goal is to quantify the level of consistency between model parameters obtained from different datasets or experiments. Analogous to Eq.(\ref{eq:evidence}), we define the evidence for the maximum likelihood model parameters as follows:
+\begin{align}
+	E(g(\tML)) &= \int d\tv \mathcal{L}(g(\tML)|\tv) \pi(\tv)
+\end{align}
+where instead of the measured data, we have used the maximum likelihood value of the data realization given the model, $g(\tML)$. Here we have denoted $g(\tv)$ as the function that computes the model prediction for the data given the parameters, $\tv$; for example, in the case of the CMB temperature fluctuations data, it may give the theory angular power spectra: $g_{\rm cmb}^{TT} = \{C_\ell^{TT}\}$, which can be obtained using standard Boltzmann codes like \texttt{camb}. If the likelihood in the above equation is a combination of two experiments, then we can define evidences for the maximum likelihood parameters obtained through the combination of the two datasets (denoted by $i,j$), $E(g(\tML_{ij}))$, or we can also define an evidence such that each part of the data vector in the evidence integral uses its own maximum likelihood parameter values, obtained by analyzing each experiment separately, $E(\{g_i(\tML_i), g_j(\tML_j)\})$. As we will show next, we can then use the ratio of the two evidences to quantify the tension between the parameter constraints obtained from two different datasets.
+
+%\saroj{perhaps a small note about the complication for $N>2$.}
+
+\section{Evidence-based dataset comparison} \label{sec:evidenceratio}
+In this section, we motivate and construct our proposed metric for dataset comparison for two datasets: for simplicity consider that they have independent likelihoods, $\mathcal{L}_i(\dv|\tv), \mathcal{L}_j(\dv|\tv)$, and let the measured data vector for each experiment be denoted by $\dv_i, \dv_j$. Let us further assume that the maximum likelihood parameters of the model, say $\Lambda$CDM for example, are known for three different cases: two datasets analyzed separately, $\tML_i, \tML_j$, and their combined analysis, $\tML_{ij}$.
+
+Our null hypothesis, $\mathcal{H}_0$ is that both the datasets are realizations of a single set of parameters, $\tML_{ij}$, from the combined fit. The alternative, more complicated, hypothesis, $\mathcal{H}_1$ is that each of the datasets are realizations of their own set of parameters, $\tML_i, \tML_j$. Then, using the Bayes theorem similar to the derivation of the Bayes factor, we get
+\begin{align}
+	\frac{p(\mathcal{H}_1)}{p(\mathcal{H}_0)} &= \frac{\int d\tv \pi(\tv) \mathcal{L}_i(g_i(\tML_i)|\tv) \mathcal{L}_j(g_j(\tML_j)|\tv)}{\int d\tv \pi(\tv) \mathcal{L}_i(g_i(\tML_{ij})|\tv) \mathcal{L}_j(g_j(\tML_{ij})|\tv)} \label{eq:DER} \\
+    &= \frac{E_{ij}^{\rm sep}}{{E_{ij}^{\rm com}}} \equiv R_{ij}
+\end{align}
+the logarithm of which can be evaluated on the empirically calibrated Jeffreys scale presented in \cite{Trotta:2008qt}. The superscripts sep and com in the formula above stand for separate and combined maximum likelihood parameters, respectively.
+
+As we will show next, the logarithm of the \textit{dataset-evidence ratio} defined above reduces to the intuitive $\chi^2$ notion of discrepancy between parameters, which is named the Index of Inconsistency (IOI) by \cite{Lin:2017ikq} when the posteriors are multivariate Gaussian distributed. Also, we should note that the ratio is somewhat related to the \textit{tension} measure defined in \cite{Verde:2013wza}, because in some situations $E_{ij}^{\rm com}$ can be approximated by shifting one of the posterior probability density functions while preserving its shape. However, there can be ambiguity in the process of shifting one or both of the posterior distributions (for non-Gaussian and multimodal distributions), as discussed in Section X.B. of \cite{Lin:2017ikq}. That ambiguity is removed in our definition, as we directly make use of the likelihood functions. 
+
+We provide an example in Figure \ref{fig:example1}, in which the Gaussian likelihood is simply, $\mathcal{L}_1(d|\theta) = \mathcal{N}(d, 1)$, where $\mathcal{N}(\mu, \sigma)$ denotes a normal probability distribution. The non-Gaussian likelihood is a (normalized) sum of two Gaussians defined as: $\mathcal{L}_2(d|\theta) = 0.9 \mathcal{N}(d, 1) + 0.1 \mathcal{N}(d+3, 0.1)$. The distributions plotted in Figure \ref{fig:example1} are $\mathcal{L}_1(d=-0.5|\theta)$ (dashed) and $\mathcal{L}_2(d=0|\theta)$ (solid). Because the combined fit is insensitive to the narrow peak near $\theta=3$, we get $\ln R_{12}=-0.064$ without any ambiguity in how to shift the distributions, which shows that the two sets of parameters $\theta_1=-0.5$ and $\theta_2=0$ from the two likelihoods are very consistent, as expected. Without the additional peak at $\theta=3$, the level of consistency is slightly better: $\ln R_{12} = -0.5\times(0.5^2)/2 = -0.0625$.
+
+\begin{figure}
+\centering
+	\includegraphics[width=0.45\textwidth]{nongaus1.pdf}
+    \caption{In this example, we verify that the two distributions shown in the figure: (i) Gaussian (dashed), and (ii) non-Gaussian (solid), are consistent with each other; the effect of the peak around $\theta=3$ in the non-Gaussian distribution is small and the dataset-evidence ratio $\ln R_{12}=-0.064$ shows that the two distributions are consistent, as expected.}
+    \label{fig:example1}
+\end{figure}
+
+The previous example was for the case of a single parameter. Now, we consider $N>1$ parameters. Suppose that the two likelihood functions are given by two $N$ dimensional multivariate Gaussian distributions with arbitrary covariance matrices $\Sigma_1$ and $\Sigma_2$, such that the two likelihoods are,
+\begin{align}
+\mathcal{L}_1(\tv) =& \frac{1}{\sqrt{\det(2\pi \Sigma_1)}} \exp\left[{-\frac{1}{2}}(\donev-\tv)^T \Sigma_1^{-1} (\donev-\tv)\right] \nonumber \\
+\mathcal{L}_2(\tv) =& \frac{1}{\sqrt{\det(2\pi \Sigma_2)}} \exp\left[{-\frac{1}{2}}(\dtwov-\tv)^T \Sigma_2^{-1} (\dtwov-\tv)\right]
+\end{align}
+
+In this simple example, we have taken $g_{i,j}(\tv) = \tv$ so that the expressions can be evaluated analytically. If we further assume that the prior on each of the parameters is uniform and wide (compared to the constraint on the parameter), we get \cite{IMM2012-03274},
+\begin{align}
+	E_{12}^{\rm sep} &\propto \int d\tv \mathcal{L}_1(\dv_1|\tv) \mathcal{L}_2(\dv_2|\tv) \nonumber \\
+    &= \frac{1}{\sqrt{\det\left[2\pi(\Sigma_1+\Sigma_2)\right]}} \nonumber \\ &~~~ \exp \left[-\frac{1}{2}(\donev-\dtwov)^T(\Sigma_1+\Sigma_2)^{-1}(\donev-\dtwov)\right] \\
+    E_{12}^{\rm com} &\propto \int d\tv \mathcal{L}_1(\dv_{12}|\tv) \mathcal{L}_2(\dv_{12}|\tv) \nonumber \\
+    &= \frac{1}{\sqrt{\det\left[2\pi(\Sigma_1 + \Sigma_2)\right]}}
+\end{align}
+so that
+\begin{align}
+R_{12} =& \exp \left[-\frac{1}{2}(\donev-\dtwov)^T(\Sigma_1+\Sigma_2)^{-1}(\donev-\dtwov)\right] \label{eq:R12NGaus}
+\end{align}
+the logarithm of which ($-\ln R_{12}$) is the index of inconsistency (IOI) defined in \cite{Lin:2017ikq}. That is, our more general definition of the dataset evidence ratio given in Eq.(\ref{eq:DER}) reduces to the intuitive notion of inconsistency for Gaussian posteriors from two experiments and uniform wide priors. We expect the more general definition to work well when the posteriors are non-Gaussian.
+In the next section, we provide example calculations of $\ln R_{12}$ using different pairs of datasets (e.g. TT vs EE) from the {\it Planck} satellite, in which case $g_i(\tv)$ is no more a simple linear function but has to evaluated numerically.
+
+%\saroj{perhaps mention the $n-\sigma \sim \sqrt{-2\ln R_{12}}$ connection as done by \cite{Lin:2017bhs} also:} 
+Calibrating the level of discrepancy between two datasets on Eq.(\ref{eq:R12NGaus}), we can define the effective n-$\sigma$ discrepancy as $\sqrt{-2 \ln R_{12}}$ \cite{Lin:2017bhs}. This is the value we use whereever we quote a n-$\sigma$ discrepancy rather than $\ln R_{12}$ in the rest of the paper. Next, we apply the dataset-evidence ratio to Planck angular power spectrum data and compare our conclusions to previous works that studied discrepancies in the Planck parameter constraints using other methods.
+
+\section{Application to Planck data} \label{sec:planck}
+We use the binned and foreground marginalized \texttt{plik\_lite} likelihood from the Planck collaboration \cite{Aghanim:2015xee} which includes multipoles $30-2508$ for TT power spectrum, and multipoles $30-1996$ for EE power spectrum. We fix the Planck calibration factor $y_p$ to 1; see Sec. C.6.2 of \cite{Aghanim:2015xee}, from which the CMB-only Gaussian \texttt{plik\_lite} likelihood is:
+\begin{align}
+	\ln \mathcal{L}(\tilde{C}_b^{\rm CMB}|C_b^{\rm th}) = -\frac{1}{2}\xv^T \tilde{\Sigma}^{-1} \xv, \label{eq:PlancklnL}
+\end{align}
+where $\xv = \tilde{C}_b^{\rm CMB}/y_p^2 - C_b^{\rm th}$. The binned and marginalized mean $\tilde{C}_b^{\rm CMB}$ and covariance matrix $\tilde{\Sigma}$ are provided by the Planck team. To evaluate the likelihood in Eq.(\ref{eq:PlancklnL}), we compute lensed $C_\ell^{\rm th}$ for a given set of parameters $\tv$ using \texttt{camb} \cite{Lewis:1999bs,Howlett:2012mh} and bin them using the appropriate weights to get $C_b^{\rm th}$.
+
+We also use a prior on the reionization optical depth to account for the effect of the low-$\ell$ polarization data: $\tau = 0.07\pm0.02$, without which $\tau$ is only weakly constrained and is strongly degenerate with the amplitude of scalar fluctuations $A_s$. The evidences we compute are:
+\begin{align}
+    E^{\rm sep}_{\rm TT, EE} =& \int d\tv ~ \pi(\tv) \nonumber \\ & \mathcal{L}(\{C_\ell^{\rm TT}(\tML_T), C_\ell^{\rm EE}(\tML_E)\}|\tv)  \\
+    {E}^{\rm com}_{\rm TT, EE} =& \int d\tv ~ \pi(\tv) \nonumber \\  & \mathcal{L}(\{C_\ell^{\rm TT}(\tML_C), C_\ell^{\rm EE}(\tML_C)\}|\tv)
+\end{align}
+where $\tML_C$ is the maximum likelihood model parameters from the combined fit, whereas $\tML_T, \tML_E$ are obtained individually by using the corresponding ${\rm TT, EE}$ data separately. We obtain the maximum likelihood values $\tML$ by using a global optimization algorithm {\tt differential\_evolution} \cite{Storn1997} implemented in {\tt scipy} \cite{scipy}. We calculate the evidences using the \texttt{MultiNest} package \cite{Feroz:2007kg, Feroz:2008xx}, and quote results and statistical errorbars produced by the importance nested sampling method \cite{Feroz:2013hea}. We take uniform priors on six cosmological parameters with the following limits for evidence calculations and when searching for maximum-likelihood parameters: \begin{align}\ln 10^{10} A_s &= \{2.7, 3.4\}, \nonumber \\ n_s &= \{0.8, 1.2\}, \nonumber \\ H_0 &=\{50, 95\}, \nonumber \\ \Omega_c &=\{0.1, 0.45\}, \nonumber \\ \Omega_b &= \{0.044, 0.056\}, \nonumber \\ \tau &=\{0.005, 0.2\}. \nonumber \end{align} 
+The results are shown in Table \ref{table:lnRTEC}.  Our results are consistent with other studies that also find that there is no indication of strong discrepancy between these datasets \cite{Shafieloo:2016zga}, albeit by using more complicated methods, or by directly using the posteriors \cite{Lin:2017bhs}.
+
+\begin{table}[t]
+\centering
+\caption{The logarithm of the dataset-evidence ratio using Planck \texttt{plik\_lite} likelihood for (i) TT, EE , and (ii) using only TT (or EE) data but splitting the data into two groups at $\ell_{\rm split}=1000$. We use a prior on $\tau=0.07\pm 0.02$ in all cases. %\saroj{these numbers will be updated after a wider and more precise search for the maximum likelihood parameters.}
+}
+\label{table:lnRTEC}
+\begin{tabular*}{0.48\textwidth}{c@{\extracolsep{\fill}} c  c}
+    \hline
+    $\ln R_{\rm TT,EE}$ & \thead{$\ln R_{\rm TT}$\\$(\ell_{\rm split}=1000)$} & \thead{$\ln R_{\rm EE}$\\$(\ell_{\rm split}=1000)$}\\
+    \hline
+     $-1.93 \pm 0.03$ & $-4.13 \pm 0.16 $ & $-0.83 \pm 0.16$ \\
+    \hline\hline
+\end{tabular*}
+\end{table}
+
+We perform another test using the {\it Planck} data, by splitting the temperature data into $\ell<1000$ and $\ell \geq 1000$ samples and calculating the dataset-evidence ratio for these two datasets. Again, we find that the level of inconsistency is moderate with $\ln R_{\rm TTsplit} = -4.13 \pm 0.16$ (using a prior on reionization optical depth of $\tau=0.07\pm 0.02$), which is consistent with previous studies using other statistics \cite{Addison:2015wyg} or simulations \cite{Aghanim:2016sns}, confirming that the Planck data in the context of $\Lambda$CDM in itself does not have strong inconsistency --- the parameter shifts are interesting only when we consider low-redshift probes that prefer different values of the Hubble constant $H_0$ \cite{Riess:2016jrr} and $\Omega_m$ \cite{Abbott:2017wau}. Note that in Table \ref{table:lnRTEC}, we are only using the \texttt{plik\_lite} likelihood and therefore low-$\ell$ ($\ell<30$) multipoles are not included; inclusion of these large-scale multipoles will likely increase the discrepancy as their amplitude is known to be anomalously low. %\saroj{investigating if we can (relatively) quickly approximate the low-l likelihood somehow}
+
+To estimate the effect of low-$\ell$ part of the TT likelihood, we implement an approximation to the low-$\ell$ likelihood following \cite{Aghanim:2016sns} (see their Section 3.2 for details), which they have tested to find that the approximation gives similar cosmological parameters compared to the computationally more demanding pixel-space likelihood. To summarize: $f_\ell(2\ell+1) \hat{C}_\ell/C_\ell$ is drawn from a $\chi^2[f_\ell(2\ell+1)]$ probability distribution function, where $f_\ell$ are mask-dependent fitting factors determined for the {\tt commander} mask. Here $\hat{C}_\ell$ is the mask-deconvolved power spectrum, which we take to be the Planck {\tt commander} quadratic maximum likelihood (QML) $C_\ell$s. Any correlation between different multipoles for $\ell<30$ and with the {\tt plik\_lite} multipole bins is ignored. For $\ell_{\rm split}=1000$, including the approximate low-$\ell$ likelihood, we now get $\ln R_{\rm TTsplit}=-5.32 \pm 0.05$ or approximately $3.26\sigma$. 
+
+Another analysis we perform using Planck data is to do a multipole split in EE {\tt plik\_lite} likelihood. The large and small scale multipole split for the EE spectrum results in consistent $\Lambda$CDM parameters: $\ln R_{\rm EEsplit}=-0.83\pm 0.16$, which is expected given the lesser constraining power of the EE spectrum for {\it Planck} noise levels. %\sout{Due to the same reason, for the TTEE multipole split we obtain $\ln R_{\rm TTEEsplit} = -2.63\pm 0.31$, close to the corresponding value for multipole split in the TT spectrum.}
+
+\section{Summary and Conclusion} \label{sec:summary}
+We have introduced an evidence ratio, which can be used to quantify the level of discrepancy between model parameters from two datasets that are expected to be described by the same underlying model parameters. This is a common occurrence in cosmology where different observations are expected to be realizations of the same underlying cosmological model. While the notion of discrepancy is fairly straightforward to define for single parameter or multiparameter Gaussian distributions, the case of multidimensional non-Gaussian distributions is more complicated. 
+
+We have shown that our definition of the dataset-evidence ratio reduces to the expected discrepancy measure for Gaussian distributed posteriors, and gives sensible results in the non-Gaussian tests that we performed. Applying to the {\it Planck} power spectrum data, we could recover previously derived conclusions about the consistency between TT and EE measurements: that the level of inconsistency is moderate, at the level of $2 \sigma$. The level of discrepancy when splitting the TT spectrum into smaller and larger scales at $\ell_{\rm split}=1000$ is slightly larger at about $3\sigma$.
+
+We have limited our application to just the Planck data in this work. It is worthwhile to apply the dataset-evidence ratio to comparing the Planck constraints with weak-lensing constraints \cite{Abbott:2017wau} and smaller scale CMB constraints \cite{Aylor:2017haa}. It will also be useful to consider using the statistic in the context of $\Lambda$CDM extensions. Further, we have only defined a measure for comparing two datasets. A straightforward application of the ratio for more than two datasets will likely produce larger values and cannot be simply evaluated on the same scale as that for the two datasets. It will therefore be useful to investigate a possible extension to more than two datasets. 
+
+\begin{acknowledgments}
+DH and SA have been supported by NASA under contract 14-ATP14-0005. This work used the Extreme Science and Engineering Discovery Environment (XSEDE), which is supported by National Science Foundation grant number ACI-1548562. We thank Marius Millea for providing the necessary $f_\ell$ coefficients and example code to implement the low-$\ell$ approximated likelihood.
+\end{acknowledgments}
+
+\bibliography{dataset_evidence_ratio.bib}
+
+
+\end{document}
+
+

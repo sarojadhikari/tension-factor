@@ -15,9 +15,6 @@ bin functions and matrix for using plik-lite
 """
 import numpy as np
 
-# read the files
-#plik_lite = "/home/saroj/Projects/plc_2.0/"
-#location = plik_lite + "hi_l/plik_lite/plik_lite_v18_TT.clik/clik/lkl_0/_external/"
 location = "plik_lite_data/"
 blmin = np.loadtxt(location + "blmin.dat", skiprows = 0)
 blmax = np.loadtxt(location + "blmax.dat", skiprows = 0)

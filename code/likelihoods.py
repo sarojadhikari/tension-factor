@@ -22,7 +22,7 @@ class Planck_plik_lite_likelihood(object):
                        [50, 95],        # H0
                        [0.1, 0.45],     # Om
                        [0.044, 0.056],  # Ob
-                       [0.005, 0.2]]    # tau
+                       [0.002, 0.4]]    # tau
         
         self.mufac = (2.7255E6)**2.0 # conversion factor to muK^2
 

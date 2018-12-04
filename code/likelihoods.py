@@ -69,6 +69,9 @@ class Planck_plik_lite_likelihood(object):
         elif (self.which == "EE"):
             self.cldata = self.clEE
             self.cov = self.gcovEE
+        elif (self.which == "TE"):
+            self.cldata = self.clTE
+            self.cov = self.gcovCC
         elif (self.which == "TTEE"):
             self.cldata = np.append(self.clTT, self.clEE)
             self.cov = self.gcovTTEE
@@ -105,6 +108,8 @@ class Planck_plik_lite_likelihood(object):
             clthb = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
         elif (self.which == "EE"):
             clthb = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
+        elif (self.which == "TE"):
+            clthb = self.bmTE@(self.mufac*(self.cmb.cambTECls[30:1997]))
         elif (self.which == "TTEE"):
             clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
             clthbE = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))

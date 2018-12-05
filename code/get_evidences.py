@@ -21,8 +21,9 @@ def Prior(cube, ndim, nparams):
         cube[i] = a + cube[i]*(b-a)
         
 def Loglike(cube, ndim, nparams, lnew):
-    return plTTEE.logLike(cube)
+    params = [cube[0], cube[1], cube[2], cube[3], cube[4], cube[5]]
+    return plTTEE.logLike(params)
 
 Ev_com = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
-                         resume=True, n_live_points=400, sampling_efficiency="model",
+                         resume=False, n_live_points=400, sampling_efficiency="model",
                          outputfiles_basename=u'chains/TTEE_combined_')

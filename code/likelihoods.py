@@ -17,12 +17,23 @@ class Planck_plik_lite_likelihood(object):
         self.tausigma = tausigma
         self.which = which
         
+        """
         self.bounds = [[2.7, 3.4],      # log10As
                        [0.8, 1.2],      # ns
                        [50, 95],        # H0
                        [0.1, 0.45],     # Om
                        [0.044, 0.056],  # Ob
                        [0.002, 0.4]]    # tau
+        """
+        
+        # need larger bounds for smaller datasets // EE split
+        # if tauprior is not used
+        self.bounds = [[2.7, 4.0],
+                       [0.7, 1.3],
+                       [40, 100],
+                       [0.05, 0.5],
+                       [0.04, 0.06],
+                       [0.002, 0.5]]
         
         self.mufac = (2.7255E6)**2.0 # conversion factor to muK^2
 

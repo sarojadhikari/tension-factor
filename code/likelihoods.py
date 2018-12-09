@@ -130,6 +130,9 @@ class Planck_plik_lite_likelihood(object):
         
         return -0.5*(cldif@self.invcov@cldif) + tauprior
     
+    def neglogLike(self, params):
+        return (-1.)*self.logLike(params)
+    
 ### sample code to get the best-fit cosmological parameters using scipy ###
 ###########################################################################
         

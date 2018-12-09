@@ -8,55 +8,36 @@ plaEE = split_likelihood(which="aEEsplit", lsplit=1000)
 plbEE = split_likelihood(which="bEEsplit", lsplit=1000)
 
 from scipy.optimize import fmin, differential_evolution as dev
-bounds = plaTT.bounds[:-1]
+bounds = plaTT.bounds
 
-fixtau = 0.07
+print (bounds)
 
-def nlikeaTT(params):
-    return plaTT.neglogLike(np.append(params, fixtau))
+res_aTT = dev(plaTT.neglogLike, bounds, disp=True, tol=0.005)
+res_aTT2 = fmin(plaTT.neglogLike, x0=res_aTT.x)
+np.save("maxlikefits/res_splitaTT_notauprior.npy", res_aTT2)
 
-def nlikeaEE(params):
-    return plaEE.neglogLike(np.append(params, fixtau))
+res_bTT = dev(plbTT.neglogLike, bounds, disp=True, tol=0.005)
+res_bTT2 = fmin(plbTT.neglogLike, x0=res_bTT.x)
+np.save("maxlikefits/res_splitbTT_notauprior.npy", res_bTT2)
 
-def nlikebTT(params):
-    return plbTT.neglogLike(np.append(params, fixtau))
+res_aEE = dev(plaEE.neglogLike, bounds, disp=True, tol=0.005)
+res_aEE2 = fmin(plaEE.neglogLike, x0=res_aEE.x)
+np.save("maxlikefits/res_splitaEE_notauprior.npy", res_aEE2)
 
-def nlikebEE(params):
-    return plbEE.neglogLike(np.append(params, fixtau))
-
-
-res_aTT = dev(nlikeaTT, bounds, disp=True, tol=0.005)
-res_aTT2 = fmin(nlikeaTT, x0=res_aTT.x)
-np.save("maxlikefits/res_splitaTT_fixtau.npy", res_aTT2)
-
-res_bTT = dev(nlikebTT, bounds, disp=True, tol=0.005)
-res_bTT2 = fmin(nlikebTT, x0=res_bTT.x)
-np.save("maxlikefits/res_splitbTT_fixtau.npy", res_bTT2)
-
-res_aEE = dev(nlikeaEE, bounds, disp=True, tol=0.005)
-res_aEE2 = fmin(nlikeaEE, x0=res_aEE.x)
-np.save("maxlikefits/res_splitaEE_fixtau.npy", res_aEE2)
-
-res_bEE = dev(nlikebEE, bounds, disp=True, tol=0.005)
-res_bEE2 = fmin(nlikebEE, x0=res_bEE.x)
-np.save("maxlikefits/res_splitbEE_fixtau.npy", res_bEE2)
+res_bEE = dev(plbEE.neglogLike, bounds, disp=True, tol=0.005)
+res_bEE2 = fmin(plbEE.neglogLike, x0=res_bEE.x)
+np.save("maxlikefits/res_splitbEE_notauprior.npy", res_bEE2)
 
 from likelihoods import Planck_plik_lite_likelihood
 
 plTT = Planck_plik_lite_likelihood(which="TT", tausigma=np.inf)
 plEE = Planck_plik_lite_likelihood(which="EE", tausigma=np.inf)
 
-def nlikeTT(params):
-    return plTT.neglogLike(np.append(params, fixtau))
+res_TT = dev(plTT.neglogLike, bounds, disp=True, tol=0.005)
+res_TT2 = fmin(plTT.neglogLike, x0=res_TT.x)
+np.save("maxlikefits/res_TT_notauprior.npy", res_TT2)
 
-def nlikeEE(params):
-    return plEE.neglogLike(np.append(params, fixtau))
-
-res_TT = dev(nlikeTT, bounds, disp=True, tol=0.005)
-res_TT2 = fmin(nlikeTT, x0=res_TT.x)
-np.save("maxlikefits/res_TT_fixtau.npy", res_TT2)
-
-res_EE = dev(nlikeEE, bounds, disp=True, tol=0.005)
-res_EE2 = fmin(nlikeEE, x0=res_EE.x)
-np.save("maxlikefits/res_EE_fixtau.npy", res_EE2)
+res_EE = dev(plEE.neglogLike, bounds, disp=True, tol=0.005)
+res_EE2 = fmin(plEE.neglogLike, x0=res_EE.x)
+np.save("maxlikefits/res_EE_notauprior.npy", res_EE2)
 

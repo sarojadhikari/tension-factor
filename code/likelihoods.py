@@ -51,6 +51,7 @@ class Planck_plik_lite_likelihood(object):
         self.clTCE = cldata[0:lbins, 1]
         self.clTT = self.clTCE[0:lbinsTT]
         self.clEE = self.clTCE[lbinsTT+lbinsEE:]
+        self.clTE = self.clTCE[lbinsTT:lbinsTT+lbinsTE]
 
         self.leff = np.array([int(cldata[i,0]) for i in range(0, 613)])
         self.gcov = np.load("plik_lite_data/c_matrix_plik_v18.npy")
@@ -64,7 +65,6 @@ class Planck_plik_lite_likelihood(object):
         self.gcovTTEE = np.bmat([[self.gcovTT, self.gcovTE],
                                  [self.gcovET, self.gcovEE]])
         
-        self.clTE = self.clTCE[lbinsTT:lbinsTT+lbinsTE]
         self.gcovTTTE = self.gcov[0:lbinsTT+lbinsTE, 0:lbinsTT+lbinsTE]
         
         # also generate various binning matrices
@@ -92,6 +92,9 @@ class Planck_plik_lite_likelihood(object):
         elif (self.which == "TTEE"):
             self.cldata = np.append(self.clTT, self.clEE)
             self.cov = self.gcovTTEE
+        elif (self.which == "TTTE"):
+            self.cldata = np.append(self.clTT, self.clTE)
+            self.cov = self.gcovTTTE
         
         self.invcov = np.linalg.inv(self.cov)
         

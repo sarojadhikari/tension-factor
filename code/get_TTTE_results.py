@@ -2,12 +2,12 @@
 # cosmological parameters -- the TT best-fit is already done
 
 import numpy as np
-import pymultinest
+#import pymultinest
 
 from likelihoods import Planck_plik_lite_likelihood
 
 suf = "notauprior"
-xTT = np.load("maxlikefits/res_TT_"+suf+".npy")
+#xTT = np.load("maxlikefits/res_TT_"+suf+".npy")
 
 # now get TE and TTTE best-fits
 plTTTE = Planck_plik_lite_likelihood(which="TTTE", tausigma=np.inf)
@@ -19,6 +19,12 @@ xTTTE = dev(plTTTE.neglogLike, bounds, disp=True, tol=0.005)
 xTTTE = fmin(plTTTE.neglogLike, x0=xTTTE.x)
 np.save("maxlikefits/res_TTTE_"+suf+".npy", xTTTE)
 
+plTE = Planck_plik_lite_likelihood(which="TE", tausigma=np.inf)
+xTE = dev(plTE.neglogLike, bounds, disp=True, tol=0.005)
+xTE = fmin(plTE.neglogLike, x0=xTE.x)
+np.save("maxlikefits/res_TE_"+suf+".npy", xTE)
+
+"""
 plTTTE.get_camb_Cls(xTTTE)
 clbfTT = plTTTE.bmTT@(plTTTE.mufac*(plTTTE.cmb.cambTCls[30:2509]))
 clbfTE = plTTTE.bmTE@(plTTTE.mufac*(plTTTE.cmb.cambTECls[30:1997]))
@@ -42,11 +48,6 @@ plTT = Planck_plik_lite_likelihood(which="TT", tausigma=np.inf)
 plTT.get_camb_Cls(xTT)
 clbfTT = plTT.bmTT@(plTT.mufac*(plTT.cmb.cambTCls[30:2509]))
 
-plTE = Planck_plik_lite_likelihood(which="TE", tausigma=np.inf)
-xTE = dev(plTE.neglogLike, bounds, disp=True, tol=0.005)
-xTE = fmin(plTE.neglogLike, x0=xTE.x)
-np.save("maxlikefits/res_TE_"+suf+".npy", xTE)
-
 plTE.get_camb_Cls(xTE)
 clbfTE = plTE.bmTE@(plTE.mufac*(plTE.cmb.cambTECls[30:1997]))
 
@@ -56,3 +57,4 @@ Ev_sep = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=T
                          resume=False, n_live_points=400, sampling_efficiency="model",
                          outputfiles_basename=u'chains/TTTE_separate_')
 
+"""

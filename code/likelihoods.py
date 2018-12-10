@@ -11,7 +11,7 @@ class Planck_plik_lite_likelihood(object):
         and implement the multivariate Gaussian log-likelihood
     """
     
-    def __init__(self, which="TT", taumean=0.07, tausigma=0.02):
+    def __init__(self, which="TT", taumean=0.07, tausigma=np.inf):
         # initialize 
         self.taumean = taumean
         self.tausigma = tausigma
@@ -29,11 +29,11 @@ class Planck_plik_lite_likelihood(object):
         # need larger bounds for smaller datasets // EE split
         # if tauprior is not used
         self.bounds = [[2.7, 4.0],
-                       [0.7, 1.3],
-                       [40, 100],
-                       [0.05, 0.5],
-                       [0.04, 0.06],
-                       [0.002, 0.5]]
+                       [0.8, 1.2],
+                       [50, 95],
+                       [0.1, 0.45],
+                       [0.042, 0.056],
+                       [0.002, 0.4]]
         
         self.mufac = (2.7255E6)**2.0 # conversion factor to muK^2
 
@@ -45,8 +45,8 @@ class Planck_plik_lite_likelihood(object):
         # read plik_lite cl and covariance data from plik_lite_data/
         cldata = np.loadtxt('plik_lite_data/cl_cmb_plik_v18.dat')
         # these data are Cls (not Dls) in mu K^2
-        lbins = 613; lbinsTT = 215; lbinsEE = 199
-        lmin = 30; lmaxTT = 2508; lmaxEE = 1996
+        lbins = 613; lbinsTT = 215; lbinsEE = 199; lbinsTE = 199
+        lmin = 30; lmaxTT = 2508; lmaxEE = 1996; lmaxTE = 1996
         
         self.clTCE = cldata[0:lbins, 1]
         self.clTT = self.clTCE[0:lbinsTT]
@@ -59,12 +59,18 @@ class Planck_plik_lite_likelihood(object):
         self.gcovTE = self.gcov[0:lbinsTT, lbinsTT+lbinsEE:]
         self.gcovET = self.gcov[lbinsTT+lbinsEE:, 0:lbinsTT]
         
+        self.gcovCC = self.gcov[lbinsTT:lbinsTT+lbinsTE, lbinsTT:lbinsTT+lbinsTE]
+        
         self.gcovTTEE = np.bmat([[self.gcovTT, self.gcovTE],
                                  [self.gcovET, self.gcovEE]])
+        
+        self.clTE = self.clTCE[lbinsTT:lbinsTT+lbinsTE]
+        self.gcovTTTE = self.gcov[0:lbinsTT+lbinsTE, 0:lbinsTT+lbinsTE]
         
         # also generate various binning matrices
         self.bmTT = bin_matrix[0:lbinsTT, 0:lmaxTT-lmin+1]
         self.bmEE = bin_matrix[lbinsTT+lbinsEE:, lmaxTT+lmaxEE-60+2:]
+        self.bmTE = bin_matrix[lbinsTT:lbinsTT+lbinsTE, lmaxTT-30+1:lmaxTT+lmaxTE-60+2]
         
     def initialize_camb(self, pol=1):
         self.cmb = CMB(camb_init=False)
@@ -125,6 +131,10 @@ class Planck_plik_lite_likelihood(object):
             clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
             clthbE = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
             clthb = np.append(clthbT, clthbE)
+        elif (self.which == "TTTE"):
+            clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
+            clthbC = self.bmTE@(self.mufac*(self.cmb.cambTECls[30:1997]))
+            clthb = np.append(clthbT, clthbC)
         
         cldif = self.cldata - clthb
         

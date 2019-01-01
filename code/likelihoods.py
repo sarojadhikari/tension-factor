@@ -11,13 +11,13 @@ class Planck_plik_lite_likelihood(object):
         and implement the multivariate Gaussian log-likelihood
     """
     
-    def __init__(self, which="TT", taumean=0.07, tausigma=0.02):
+    def __init__(self, which="TT", taumean=0.07, tausigma=0.02, lowlTT=False):
         # initialize 
         self.taumean = taumean
         self.tausigma = tausigma
         self.which = which
+        self.lowlTT = lowlTT
         
-        """
         self.bounds = [[2.7, 3.4],      # log10As
                        [0.8, 1.2],      # ns
                        [50, 95],        # H0
@@ -29,13 +29,24 @@ class Planck_plik_lite_likelihood(object):
         # need larger bounds for smaller datasets // EE split
         # if tauprior is not used
         self.bounds = [[2.7, 4.0],
-                       [0.7, 1.3],
-                       [40, 100],
-                       [0.05, 0.5],
-                       [0.04, 0.06],
-                       [0.002, 0.5]]
+                       [0.8, 1.2],
+                       [50, 95],
+                       [0.1, 0.45],
+                       [0.04, 0.056],
+                       [0.002, 0.4]]
+        """
         
         self.mufac = (2.7255E6)**2.0 # conversion factor to muK^2
+        
+        if (self.lowlTT):
+            from scipy.stats import chi2
+            from cosmology.cosmoparams import Planck2015
+            p15 = Planck2015()
+            self.fl = np.loadtxt("commander_dx11d2_mask_temp_n0016_likelihood_v1_f.dat", skiprows=2)
+            self.fsky = 0.9362
+            cls_meas_low, cls_err_low = p15.get_Planck_lowL_data(lmin=2)
+            self.cls_meas_low = cls_meas_low * self.mufac
+            self.chi2s = [chi2((2*l+1)*self.fsky*self.fl[l-2]) for l in range(2, 30)]        
 
         self.read_data()
         self.initialize_camb()   
@@ -102,6 +113,13 @@ class Planck_plik_lite_likelihood(object):
         self.cmb.set_camb_cosmology()
         self.cmb.get_camb_results()
         
+    def get_lowlkl(self):
+        cls_lowl = self.mufac*(self.cmb.cambTCls[2:30])
+        lowlkl = np.log([self.chi2s[l-2].pdf(
+                    (2*l+1)*self.fsky*self.fl[l-2]*self.cls_meas_low[l-2]/cls_lowl[l-2])/cls_lowl[l-2] 
+                        for l in range(2, 30)]).sum()
+        return lowlkl
+        
     def logLike(self, params):
         # evaluate the loglikelihood including the tau prior
         
@@ -116,7 +134,7 @@ class Planck_plik_lite_likelihood(object):
         
         # first obtain the binned theory cls
         if (self.which == "TT"):
-            clthb = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
+            clthb = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))                
         elif (self.which == "EE"):
             clthb = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
         elif (self.which == "TE"):
@@ -125,6 +143,11 @@ class Planck_plik_lite_likelihood(object):
             clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
             clthbE = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
             clthb = np.append(clthbT, clthbE)
+            
+        if (self.lowlTT):
+            tauprior = tauprior + self.get_lowlkl()
+                
+           
         
         cldif = self.cldata - clthb
         

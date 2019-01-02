@@ -11,7 +11,7 @@ class sptsz(SlikPlugin):
     
         self.sptsz = likelihoods.SPTSZ_lowl_2017.SPTSZ_lowl(
                         ab_on=True,
-                        cal = param(0.983,0.0015,min=0,gaussian_prior=(0.983,0.0015))
+                        cal = param(0.9914,0.0017,min=0,gaussian_prior=(0.9914,0.0017))
                         )
 
         # set up cosmological params and solver

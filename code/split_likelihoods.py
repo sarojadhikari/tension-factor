@@ -6,7 +6,7 @@ class split_likelihood(Planck_plik_lite_likelihood):
     def __init__(self, which="TTsplit", lsplit=1000, taumean=0.07, tausigma=np.inf, lowlTT=False):
         #super().__init__(which)
         self.taumean = taumean
-        self.tausigma = tausiam
+        self.tausigma = tausigma
         self.lsplit = lsplit
         self.bsplit = 114 # get the nearest bin for the split; currently hard set for 1000
         super().__init__(which, taumean=self.taumean, tausigma=self.tausigma, lowlTT=lowlTT)

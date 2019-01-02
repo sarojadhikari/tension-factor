@@ -3,12 +3,13 @@ import numpy as np
 from likelihoods import Planck_plik_lite_likelihood
 
 class split_likelihood(Planck_plik_lite_likelihood):
-    def __init__(self, which="TTsplit", lsplit=1000, lowlTT=False):
+    def __init__(self, which="TTsplit", lsplit=1000, taumean=0.07, tausigma=np.inf, lowlTT=False):
         #super().__init__(which)
-        self.tausigma = np.inf
+        self.taumean = taumean
+        self.tausigma = tausiam
         self.lsplit = lsplit
         self.bsplit = 114 # get the nearest bin for the split; currently hard set for 1000
-        super().__init__(which, tausigma=self.tausigma, lowlTT=lowlTT)
+        super().__init__(which, taumean=self.taumean, tausigma=self.tausigma, lowlTT=lowlTT)
 
     def set_data_and_covariance(self):
         if (self.which == "TTsplit"):

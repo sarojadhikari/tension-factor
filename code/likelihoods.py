@@ -11,11 +11,7 @@ class Planck_plik_lite_likelihood(object):
         and implement the multivariate Gaussian log-likelihood
     """
     
-<<<<<<< HEAD
     def __init__(self, which="TT", taumean=0.07, tausigma=0.02, lowlTT=False):
-=======
-    def __init__(self, which="TT", taumean=0.07, tausigma=np.inf):
->>>>>>> 75a0e46024302d919bc246ef6837477f5a5113dc
         # initialize 
         self.taumean = taumean
         self.tausigma = tausigma
@@ -36,15 +32,12 @@ class Planck_plik_lite_likelihood(object):
                        [0.8, 1.2],
                        [50, 95],
                        [0.1, 0.45],
-<<<<<<< HEAD
                        [0.04, 0.056],
                        [0.002, 0.4]]
-        """
-=======
                        [0.042, 0.056],
                        [0.002, 0.4]]
->>>>>>> 75a0e46024302d919bc246ef6837477f5a5113dc
-        
+	"""
+
         self.mufac = (2.7255E6)**2.0 # conversion factor to muK^2
         
         if (self.lowlTT):
@@ -161,19 +154,16 @@ class Planck_plik_lite_likelihood(object):
             clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
             clthbE = self.bmEE@(self.mufac*(self.cmb.cambECls[30:1997]))
             clthb = np.append(clthbT, clthbE)
-<<<<<<< HEAD
             
         if (self.lowlTT):
             tauprior = tauprior + self.get_lowlkl()
                 
            
-=======
         elif (self.which == "TTTE"):
             clthbT = self.bmTT@(self.mufac*(self.cmb.cambTCls[30:2509]))
             clthbC = self.bmTE@(self.mufac*(self.cmb.cambTECls[30:1997]))
             clthb = np.append(clthbT, clthbC)
->>>>>>> 75a0e46024302d919bc246ef6837477f5a5113dc
-        
+
         cldif = self.cldata - clthb
         
         return -0.5*(cldif@self.invcov@cldif) + tauprior

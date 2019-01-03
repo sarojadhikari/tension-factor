@@ -4,10 +4,10 @@ import pymultinest
 from likelihoods import Planck_plik_lite_likelihood
 
 xTT = np.load("maxlikefits/res_TT_notauprior.npy")
-xEE = np.load("maxlikefits/res_EE_notauprior.npy")
-xTTEE = np.load("maxlikefits/res_TTEE_notauprior.npy")
+xEE = np.load("maxlikefits/res_EE_wtauprior.npy")
+xTTEE = np.load("maxlikefits/res_TTEE_wtauprior.npy")
 
-plTTEE = Planck_plik_lite_likelihood(which="TTEE", tausigma=np.inf)
+plTTEE = Planck_plik_lite_likelihood(which="TTEE", taumean=xTTEE[5], tausigma=0.02)
 
 # combined
 plTTEE.get_camb_Cls(xTTEE)
@@ -27,7 +27,7 @@ def Loglike(cube, ndim, nparams, lnew):
 
 Ev_com = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
                          resume=False, n_live_points=400, sampling_efficiency="model",
-                         outputfiles_basename=u'chains/TTEE_combined_')
+                         outputfiles_basename=u'chains2019/TTEE_combined_')
 
 # now separate
 plTTEE.get_camb_Cls(xTT)
@@ -36,7 +36,8 @@ plTTEE.get_camb_Cls(xEE)
 clbfEE = plTTEE.bmEE@(plTTEE.mufac*(plTTEE.cmb.cambECls[30:1997]))
 
 plTTEE.cldata = np.append(clbfTT, clbfEE)
+plTTEE.taumean = xEE[5]
 
 Ev_sep = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
                          resume=False, n_live_points=400, sampling_efficiency="model",
-                         outputfiles_basename=u'chains/TTEE_separate_')
+                         outputfiles_basename=u'chains2019/TTEE_separate_')

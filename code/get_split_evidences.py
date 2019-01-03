@@ -5,17 +5,17 @@ from likelihoods import Planck_plik_lite_likelihood
 from split_likelihoods import split_likelihood
 
 
-xTT = np.load("maxlikefits/resTT_notauprior.npy")
+xTT = np.load("maxlikefits/res_TT_notauprior.npy")
 xTa = np.load("maxlikefits/res_splitaTT_notauprior.npy")
 xTb = np.load("maxlikefits/res_splitbTT_notauprior.npy")
 
-xEE = np.load("maxlikefits/resEE_notauprior.npy")
+xEE = np.load("maxlikefits/res_EE_notauprior.npy")
 xEa = np.load("maxlikefits/res_splitaEE_notauprior.npy")
 xEb = np.load("maxlikefits/res_splitbEE_notauprior.npy")
 
 #xTTEE = np.load("maxlikefits/resTTEE_notauprior.npy")
 
-plTT = Planck_plik_lite_likelihood(which="TT", tausigma=np.inf)
+plTT = Planck_plik_lite_likelihood(which="TT", taumean=0.07, tausigma=0.02)
 plTTa = split_likelihood(which="aTTsplit")
 plTTb = split_likelihood(which="bTTsplit")
 
@@ -40,7 +40,7 @@ def Loglike(cube, ndim, nparams, lnew):
 
 Ev_sep = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
                          resume=False, n_live_points=400, sampling_efficiency="model",
-                         outputfiles_basename=u'chains/TTsplit_separate_')
+                         outputfiles_basename=u'chains2019/TTsplit_separate_')
 
 plTT.get_camb_Cls(xTT)
 clbfTT = plTT.bmTT@(plTT.mufac*(plTT.cmb.cambTCls[30:2509]))
@@ -49,4 +49,4 @@ plTT.cldata = clbfTT
 
 Ev_com = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
 			 resume=False, n_live_points=400, sampling_efficiency="model",
-			 outputfiles_basename=u'chains/TTsplit_combined_')
+			 outputfiles_basename=u'chains2019/TTsplit_combined_')

@@ -5,9 +5,9 @@ from likelihoods import Planck_plik_lite_likelihood
 from split_likelihoods import split_likelihood
 
 
-xTT = np.load("maxlikefits/resTT_wlowl.npy")
-xTa = np.load("maxlikefits/res_splitaTT_notauprior.npy")
-xTb = np.load("maxlikefits/resbTT_wlowl.npy")
+xTT = np.load("maxlikefits/res_TT_wtauprior_wlowl.npy")
+xTa = np.load("maxlikefits/res_splitaTT_wtauprior.npy")
+xTb = np.load("maxlikefits/res_splitbTT_notauprior_wlowl.npy")
 
 #xEE = np.load("maxlikefits/res_EE_notauprior.npy")
 #xEa = np.load("maxlikefits/res_splitaEE_notauprior.npy")
@@ -15,13 +15,12 @@ xTb = np.load("maxlikefits/resbTT_wlowl.npy")
 
 #xTTEE = np.load("maxlikefits/resTTEE_notauprior.npy")
 
-plTT = Planck_plik_lite_likelihood(which="TT", taumean=0.07, tausigma=0.02, lowlTT=True)
+plTT = Planck_plik_lite_likelihood(which="TT", taumean=xTa[5], tausigma=0.02, lowlTT=True)
 plTTa = split_likelihood(which="aTTsplit")
 plTTb = split_likelihood(which="bTTsplit")
 
 plTTa.get_camb_Cls(xTa)
 plTTb.get_camb_Cls(xTb)
-
 
 #clbfTT = plTT.bmTT@(plTT.mufac*(plTT.cmb.cambTCls[30:2509]))
 
@@ -41,15 +40,17 @@ def Loglike(cube, ndim, nparams, lnew):
     return plTT.logLike(params)
 
 Ev_sep = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
-                         resume=False, n_live_points=400, sampling_efficiency="model",
+                         resume=True, evidence_tolerance=0.001,  n_live_points=500, sampling_efficiency="model",
                          outputfiles_basename=u'chains2019/TTsplitwlowl_separate_')
 
 plTT.get_camb_Cls(xTT)
 clbfTT = plTT.bmTT@(plTT.mufac*(plTT.cmb.cambTCls[30:2509]))
 
+plTT.taumean = xTT[5]
+
 plTT.cldata = clbfTT
 plTT.cls_meas_low = plTT.mufac*(plTT.cmb.cambTCls[2:30])
 
 Ev_com = pymultinest.run(LogLikelihood=Loglike, Prior=Prior, n_dims=6, verbose=True,
-			 resume=False, n_live_points=400, sampling_efficiency="model",
+			 resume=True, evidence_tolerance=0.001, n_live_points=500, sampling_efficiency="model",
 			 outputfiles_basename=u'chains2019/TTsplitwlowl_combined_')
